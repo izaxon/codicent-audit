@@ -4,18 +4,23 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(process.argv[2] ?? fileURLToPath(new URL('.', import.meta.url)));
 const allowed = new Set(['.nojekyll', 'CNAME', 'README.md', 'index.html', 'og.png', 'smoke.mjs']);
+const allowedRoot = new Set([...allowed, '.github']);
 const ignoredLocal = new Set(['.git', '.gitignore', '.next', '.vinext', '.wrangler', '.openai', 'node_modules', 'app', 'public']);
 const files = readdirSync(root).filter((name) => !ignoredLocal.has(name));
 
 for (const name of files) {
-  if (!allowed.has(name) || !statSync(resolve(root, name)).isFile()) {
+  if (!allowedRoot.has(name)) {
     throw new Error(`Unexpected public artifact: ${basename(name)}`);
   }
 }
 
 for (const name of allowed) {
   if (!existsSync(resolve(root, name))) throw new Error(`Missing public artifact: ${name}`);
+  if (!statSync(resolve(root, name)).isFile()) throw new Error(`Public artifact is not a file: ${name}`);
 }
+
+const pagesWorkflow = resolve(root, '.github', 'workflows', 'pages.yml');
+if (!existsSync(pagesWorkflow) || !statSync(pagesWorkflow).isFile()) throw new Error('Missing Pages workflow');
 
 const html = readFileSync(resolve(root, 'index.html'), 'utf8');
 for (const value of ['Codicent Audit AI', 'Varje krav. Varje avvikelse. Samma spårbara flöde.', 'Från kravbibliotek till stängd avvikelse.', 'Tre roller. En gemensam historik.', 'mailto:info@codicent.com']) {
