@@ -23,7 +23,7 @@ const pagesWorkflow = resolve(root, '.github', 'workflows', 'pages.yml');
 if (!existsSync(pagesWorkflow) || !statSync(pagesWorkflow).isFile()) throw new Error('Missing Pages workflow');
 
 const html = readFileSync(resolve(root, 'index.html'), 'utf8');
-for (const value of ['Codicent Audit AI', 'Varje krav. Varje avvikelse. Samma spårbara flöde.', 'Från kravbibliotek till stängd avvikelse.', 'Tre roller. En gemensam historik.', 'mailto:info@codicent.com']) {
+for (const value of ['Codicent Audit AI', 'Varje krav. Varje avvikelse. Samma spårbara flöde.', 'Från enstaka audits till en löpande dialog.', 'Nästa audit börjar där den förra slutade.', 'Tre roller. En gemensam historik.', 'mailto:info@codicent.com']) {
   if (!html.includes(value)) throw new Error(`Missing required site content: ${value}`);
 }
 
